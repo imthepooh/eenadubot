@@ -15,17 +15,23 @@ def eenadu(request):
         if update.callback_query:
             query = update.callback_query
             chat_id = query.message.chat_id
-            message_id = query.message_id
+            message_id = query.message.message_id
             if re.match(r'^[a-z]',query.data):
                 if query.data == 't':
                     res_text = gettithi()
                     bot.send_message(chat_id=chat_id,text=res_text)
+                    keyboard = [[InlineKeyboardButton('Tithi',callback_data='t'),InlineKeyboardButton('Sangathi',callback_data='s'),InlineKeyboardButton('Rasi',callback_data='r')]]
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    bot.send_message(chat_id=chat_id,text='Select Operation',reply_markup=reply_markup)                    
                 elif query.data == 's':
                     img_url = getimg()
                     if img_url == 'empty':
                         bot.send_message(chat_id=chat_id,text='No image found')
                     else:
                         bot.send_photo(chat_id=chat_id,photo=img_url)
+                    keyboard = [[InlineKeyboardButton('Tithi',callback_data='t'),InlineKeyboardButton('Sangathi',callback_data='s'),InlineKeyboardButton('Rasi',callback_data='r')]]
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    bot.send_message(chat_id=chat_id,text='Select Operation',reply_markup=reply_markup)                    
                 elif query.data == 'r':
                     keyboard = [[InlineKeyboardButton("Aries/Mesham", callback_data='1-Aries/Mesham'),InlineKeyboardButton("Taurus/Vrishabham", callback_data='2-Taurus/Vrishabham')],
                         [InlineKeyboardButton("Gemini/Midhunam", callback_data='3-Gemini/Midhunam'),InlineKeyboardButton("Cancer/Karkatakam", callback_data='4-Cancer/Karkatakam')],
@@ -45,7 +51,10 @@ def eenadu(request):
                 soup = BeautifulSoup(reqpage.content,'html.parser')
                 hscope = soup.find('section',class_='two-col-left-block box-shadow telugu_uni_body fullstory offset-bt1')
                 res_text = '\n' + parse_message[1] + '\n' + hscope.get_text()
-                bot.edit_message_text(chat_id=query.message.chat_id,message_id=message_id,text=res_text)
+                bot.edit_message_text(chat_id=chat_id,message_id=message_id,text=res_text)
+                keyboard = [[InlineKeyboardButton('Tithi',callback_data='t'),InlineKeyboardButton('Sangathi',callback_data='s'),InlineKeyboardButton('Rasi',callback_data='r')]]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                bot.send_message(chat_id=chat_id,text='Select Operation',reply_markup=reply_markup)                    
             else:
                 bot.send_message(chat_id=chat_id,text='Unknown error')
         else:            
